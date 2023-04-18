@@ -1,0 +1,35 @@
+env:
+  node: true
+extends:
+  - plugin:@typescript-eslint/recommended
+  - plugin:prettier/recommended
+  - plugin:unicorn/recommended
+  - airbnb-typescript/base
+  - plugin:security/recommended
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: 11
+  project: ./tsconfig.json
+plugins:
+  - 'typescript'
+  - '@typescript-eslint'
+  - 'security'
+rules:
+  'import/no-unresolved': 0
+  'import/prefer-default-export': 0
+  'class-methods-use-this': 0
+  'lines-between-class-members': 0
+  'object-curly-newline': 0
+  '@typescript-eslint/comma-dangle': 0
+  'no-return-await': 0
+  'unicorn/no-null': 0
+  'implicit-arrow-linebreak': 0
+  'security/detect-non-literal-fs-filename': 0
+  'import/no-extraneous-dependencies': 0
+  'import/extensions': 0
+  'unicorn/prefer-module': 1
+  'unicorn/prefer-top-level-await': 1
+  '@typescript-eslint/indent': 0
+  '@typescript-eslint/no-explicit-any': 1
+  '@typescript-eslint/brace-style': 0
+
