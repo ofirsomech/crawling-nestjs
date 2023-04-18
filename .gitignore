@@ -395,4 +395,4 @@ secrets/*.json
 /.scannerwork/
 .husky/
 .
-/src/modules/scrapper/screenshots/
+/src/modules/screenshot/screenshots/
