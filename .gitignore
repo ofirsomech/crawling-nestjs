@@ -394,3 +394,5 @@ dist
 secrets/*.json
 /.scannerwork/
 .husky/
+.
+/src/modules/scrapper/screenshots/
