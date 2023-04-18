@@ -14,4 +14,8 @@ export class ScrapperProvider {
   async crawlWebsite(url: string) {
     return this.scrapperService.crawlWebsite(url);
   }
+
+  async getWebsiteData(url: string) {
+    return this.scrapperService.getWebsiteData(url);
+  }
 }

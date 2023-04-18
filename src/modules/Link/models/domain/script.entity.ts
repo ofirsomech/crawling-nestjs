@@ -1,21 +1,22 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class Stylesheet {
+export class Script {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
+  @Index()
   url: string;
 
   @Column({ length: 2048 })
-  stylesheet_url: string;
+  script_url: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,38 +1,43 @@
-import { Inject, Injectable } from '@nestjs/common';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as puppeteer from 'puppeteer';
-import * as fs from 'fs';
-import * as path from 'path';
 import { EntityManager, Repository } from 'typeorm';
-import { Screenshot } from '../models/domain/screenshot.entity';
+import { Inject, Injectable } from '@nestjs/common';
 import { getRepositoryToken, InjectEntityManager } from '@nestjs/typeorm';
-import { Link } from '../models/domain/link.entity';
 import { Script } from '../models/domain/script.entity';
+import { AppLogger } from '../../../core/logger/logger';
+import { Screenshot } from '../models/domain/screenshot.entity';
 import { Stylesheet } from '../models/domain/stylesheet.entity';
+import { LinkService } from '../../Link/services/link.service';
 
 @Injectable()
 export class ScrapperService {
   constructor(
+    private readonly appLogger: AppLogger,
+    private readonly linkService: LinkService,
     @InjectEntityManager() private readonly entityManager: EntityManager,
-    @Inject(getRepositoryToken(Screenshot))
-    private readonly screenshotRepository: Repository<Screenshot>,
-    @Inject(getRepositoryToken(Link))
-    private readonly linkRepository: Repository<Link>,
     @Inject(getRepositoryToken(Script))
     private readonly scriptRepository: Repository<Script>,
+    @Inject(getRepositoryToken(Screenshot))
+    private readonly screenshotRepository: Repository<Screenshot>,
     @Inject(getRepositoryToken(Stylesheet))
     private readonly stylesheetRepository: Repository<Stylesheet>
   ) {}
 
   async crawlWebsite(url: string) {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
+    const browser: puppeteer.Browser = await puppeteer.launch({
+      headless: true,
+    });
+    const page: puppeteer.Page = await browser.newPage();
 
-    const screenshot = await this.getScreenshot(url, page);
-    const links = await this.getLinksFromPage(url, page);
-    const stylesheets = await this.getStylesheetsFromPage(url, page);
-    const scripts = await this.getScriptsFromPage(url, page);
+    const screenshot: string = await this.crawlScreenshot(url, page);
+    const links = await this.linkService.crawlLinksFromPage(url, page);
+    const stylesheets = await this.crawlStylesheetsFromPage(url, page);
+    const scripts = await this.crawlScriptsFromPage(url, page);
 
     await browser.close();
+    this.appLogger.log(`Crawled website: ${url}`);
+
     return {
       screenshot: `Screenshot saved at ${screenshot}`,
       links: links.length,
@@ -42,10 +47,15 @@ export class ScrapperService {
   }
 
   async getWebsiteData(url: string) {
+    this.appLogger.log(`Getting website data: ${url}`);
+
+    const websiteData = {};
+
+    // Fetch website data
     const screenshot = await this.screenshotRepository.find({
       where: { url: url },
     });
-    const links = await this.linkRepository.find({
+    const links = await this.linkService.find({
       where: { url: url },
     });
     const stylesheets = await this.stylesheetRepository.find({
@@ -55,46 +65,21 @@ export class ScrapperService {
       where: { url: url },
     });
 
-    return {
-      screenshot,
-      links,
-      stylesheets,
-      scripts,
-    };
-  }
-
-  async getLinksFromPage(url: string, page: puppeteer.Page) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
-    const links = await page.evaluate(
-      (url) =>
-        [...document.querySelectorAll('a')].map((link) => ({
-          url: url,
-          url_link: link.href,
-          text: link.textContent.trim(),
-        })),
-      url
-    );
-
-    const savePromises = links.map(async (link) => {
-      const linkEntity = new Link();
-      linkEntity.url = link.url;
-      linkEntity.url_link = link.url_link;
-      linkEntity.text = link.text;
-
-      try {
-        await this.linkRepository.save(linkEntity);
-      } catch (error) {
-        console.error(`Error saving link: ${link.text}`, error);
+    // Group website data by date
+    for (const item of [...screenshot, ...links, ...stylesheets, ...scripts]) {
+      const date = new Date(item.createdAt).toLocaleDateString('en-GB');
+      if (!websiteData[date]) {
+        websiteData[date] = [];
       }
-    });
+      websiteData[date].push(item);
+    }
 
-    await Promise.all(savePromises);
+    this.appLogger.log(`Got website data: ${url}`);
 
-    return links;
+    return websiteData;
   }
 
-  async getScriptsFromPage(url: string, page: puppeteer.Page) {
+  async crawlScriptsFromPage(url: string, page: puppeteer.Page) {
     await page.goto(url, { waitUntil: 'networkidle0' });
     const scripts = await page.$$eval('script[src]', (scriptTags) =>
       scriptTags.map((script) => script.src)
@@ -112,10 +97,12 @@ export class ScrapperService {
 
     await Promise.all(promises);
 
+    this.appLogger.log(`Found ${scripts.length} scripts on the page`);
+
     return scripts;
   }
 
-  async getStylesheetsFromPage(url: string, page: puppeteer.Page) {
+  async crawlStylesheetsFromPage(url: string, page: puppeteer.Page) {
     await page.goto(url, { waitUntil: 'networkidle0' });
 
     const stylesheets = await page.evaluate(() => {
@@ -141,10 +128,12 @@ export class ScrapperService {
       )
     );
 
+    this.appLogger.log(`Found ${stylesheets.length} stylesheets on the page`);
+
     return stylesheets;
   }
 
-  async getScreenshot(url: string, page: puppeteer.Page) {
+  async crawlScreenshot(url: string, page: puppeteer.Page) {
     await page.goto(url, { waitUntil: 'networkidle0' });
     const screenshot = await page.screenshot({
       fullPage: true,
@@ -168,6 +157,8 @@ export class ScrapperService {
     screenshotEntity.path = fileName;
 
     await this.screenshotRepository.save(screenshotEntity);
+
+    this.appLogger.log(`Screenshot saved at ${screenshot}`);
 
     return screenshotPath;
   }

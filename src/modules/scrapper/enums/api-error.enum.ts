@@ -1,3 +1,3 @@
 export enum ApiErrors {
-  EXAMPLE_FAIL = 'Fail example',
+  CRAWLING_FAIL = 'Crawling example',
 }
