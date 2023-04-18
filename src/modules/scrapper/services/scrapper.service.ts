@@ -4,20 +4,19 @@ import * as puppeteer from 'puppeteer';
 import { EntityManager, Repository } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { getRepositoryToken, InjectEntityManager } from '@nestjs/typeorm';
-import { Script } from '../models/domain/script.entity';
 import { AppLogger } from '../../../core/logger/logger';
 import { Screenshot } from '../models/domain/screenshot.entity';
 import { Stylesheet } from '../models/domain/stylesheet.entity';
 import { LinkService } from '../../Link/services/link.service';
+import { ScriptService } from '../../Script/services/script.service';
 
 @Injectable()
 export class ScrapperService {
   constructor(
     private readonly appLogger: AppLogger,
     private readonly linkService: LinkService,
+    private readonly scriptService: ScriptService,
     @InjectEntityManager() private readonly entityManager: EntityManager,
-    @Inject(getRepositoryToken(Script))
-    private readonly scriptRepository: Repository<Script>,
     @Inject(getRepositoryToken(Screenshot))
     private readonly screenshotRepository: Repository<Screenshot>,
     @Inject(getRepositoryToken(Stylesheet))
@@ -33,7 +32,7 @@ export class ScrapperService {
     const screenshot: string = await this.crawlScreenshot(url, page);
     const links = await this.linkService.crawlLinksFromPage(url, page);
     const stylesheets = await this.crawlStylesheetsFromPage(url, page);
-    const scripts = await this.crawlScriptsFromPage(url, page);
+    const scripts = await this.scriptService.crawlScriptsFromPage(url, page);
 
     await browser.close();
     this.appLogger.log(`Crawled website: ${url}`);
@@ -61,7 +60,7 @@ export class ScrapperService {
     const stylesheets = await this.stylesheetRepository.find({
       where: { url: url },
     });
-    const scripts = await this.scriptRepository.find({
+    const scripts = await this.scriptService.find({
       where: { url: url },
     });
 
@@ -77,29 +76,6 @@ export class ScrapperService {
     this.appLogger.log(`Got website data: ${url}`);
 
     return websiteData;
-  }
-
-  async crawlScriptsFromPage(url: string, page: puppeteer.Page) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
-    const scripts = await page.$$eval('script[src]', (scriptTags) =>
-      scriptTags.map((script) => script.src)
-    );
-    const scriptEntities = scripts.map((script) => {
-      const scriptEntity = new Script();
-      scriptEntity.url = url;
-      scriptEntity.script_url = script;
-      return scriptEntity;
-    });
-
-    const promises = scriptEntities.map((scriptEntity) =>
-      this.scriptRepository.save(scriptEntity)
-    );
-
-    await Promise.all(promises);
-
-    this.appLogger.log(`Found ${scripts.length} scripts on the page`);
-
-    return scripts;
   }
 
   async crawlStylesheetsFromPage(url: string, page: puppeteer.Page) {
