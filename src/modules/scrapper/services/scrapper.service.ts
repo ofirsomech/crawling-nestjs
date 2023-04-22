@@ -18,11 +18,11 @@ export class ScrapperService {
   ) {}
 
   async crawlWebsite(url: string) {
-    // const browser: puppeteer.Browser = await puppeteer.launch({
-    //   executablePath: '/usr/bin/chromium-browser',
-    //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    // });
-    const browser: puppeteer.Browser = await puppeteer.launch();
+    const browser: puppeteer.Browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium-browser',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+    // const browser: puppeteer.Browser = await puppeteer.launch();
     const page: puppeteer.Page = await browser.newPage();
 
     const screenshot: string = await this.screenshotService.crawlScreenshot(
