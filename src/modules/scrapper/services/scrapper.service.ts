@@ -1,16 +1,18 @@
 import * as puppeteer from 'puppeteer';
 import { Injectable } from '@nestjs/common';
+import { addToAllScansData } from '../utils/utils';
 import { AppLogger } from '../../../core/logger/logger';
 import { LinkService } from '../../Link/services/link.service';
 import { ScriptService } from '../../script/services/script.service';
+import { AppConfigService } from '../../../config/app-config.service';
 import { ScreenshotService } from '../../screenshot/services/screenshot.service';
 import { StylesheetService } from '../../stylesheet/services/stylesheet.service';
-import { addToAllScansData } from '../utils/utils';
 
 @Injectable()
 export class ScrapperService {
   constructor(
     private readonly appLogger: AppLogger,
+    private readonly appConfigService: AppConfigService,
     private readonly linkService: LinkService,
     private readonly scriptService: ScriptService,
     private readonly screenshotService: ScreenshotService,
@@ -18,16 +20,27 @@ export class ScrapperService {
   ) {}
 
   async crawlWebsite(url: string) {
-    const browser: puppeteer.Browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium-browser',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-    // const browser: puppeteer.Browser = await puppeteer.launch();
+    const start = Date.now(); // Record the start time
+
+    const dockerEnvironment = this.appConfigService.isDocker;
+
+    const browser: puppeteer.Browser = await puppeteer.launch(
+      dockerEnvironment
+        ? {
+            executablePath: '/usr/bin/chromium-browser',
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+          }
+        : {}
+    );
     const page: puppeteer.Page = await browser.newPage();
+
+    const timeout = 60_000;
+    await page.goto(url, { waitUntil: 'networkidle0', timeout });
 
     const screenshot: string = await this.screenshotService.crawlScreenshot(
       url,
-      page
+      page,
+      dockerEnvironment
     );
     const links = await this.linkService.crawlLinksFromPage(url, page);
     const stylesheets = await this.stylesheetService.crawlStylesheetsFromPage(
@@ -37,13 +50,19 @@ export class ScrapperService {
     const scripts = await this.scriptService.crawlScriptsFromPage(url, page);
 
     await browser.close();
-    this.appLogger.log(`Crawled website: ${url}`);
+
+    const end = Date.now(); // Record the end time
+    const duration = end - start; // Calculate the duration in milliseconds
+    const durationInSeconds = (duration / 1000).toFixed(3); // Calculate the duration in seconds with 3 decimal places
+
+    this.appLogger.log(`Crawled website: ${url} in ${durationInSeconds}s`);
 
     return {
-      screenshot: `Screenshot saved at ${screenshot}`,
+      screenshot: screenshot,
       links: links.length,
       stylesheets: stylesheets.length,
       scripts: scripts.length,
+      duration: `${durationInSeconds}s`, // Include the duration in seconds with the format ss:ms in the response
     };
   }
 

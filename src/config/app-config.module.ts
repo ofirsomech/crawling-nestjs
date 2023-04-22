@@ -15,6 +15,7 @@ import { LoggerModule } from '../core/logger/logger.module';
         NODE_ENV: Joi.string()
           .valid('local', 'development', 'production', 'staging')
           .default('local'),
+        DOCKER_ENV: Joi.string(),
         LOG_LEVEL: Joi.string().default('debug'),
         PORT: Joi.number().port().default(8080),
         SALT: Joi.number().integer().positive(),

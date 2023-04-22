@@ -12,8 +12,6 @@ export class StylesheetService {
   ) {}
 
   async crawlStylesheetsFromPage(url: string, page: puppeteer.Page) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
     const stylesheets = await page.evaluate(() => {
       const stylesheetList = [];
       for (const link of document.querySelectorAll('link')) {

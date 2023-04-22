@@ -1,4 +1,11 @@
-import {Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Screenshot {
@@ -10,7 +17,10 @@ export class Screenshot {
   url: string;
 
   @Column()
-  path: string;
+  fileName: string;
+
+  @Column()
+  downloadLink: string;
 
   @CreateDateColumn()
   createdAt: Date;

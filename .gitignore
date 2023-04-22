@@ -387,7 +387,6 @@ Temporary Items
 
 =======
 # Local
-docker-compose.yml
 .env
 dist
 *.env
@@ -396,3 +395,5 @@ secrets/*.json
 .husky/
 .
 /src/modules/screenshot/screenshots/
+/src/screenshot/
+/src/screenshots/

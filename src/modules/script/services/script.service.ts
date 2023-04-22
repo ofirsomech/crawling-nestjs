@@ -12,7 +12,6 @@ export class ScriptService {
   ) {}
 
   async crawlScriptsFromPage(url: string, page: puppeteer.Page) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
     const scripts = await page.$$eval('script[src]', (scriptTags) =>
       scriptTags.map((script) => script.src)
     );

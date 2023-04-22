@@ -12,8 +12,6 @@ export class LinkService {
   ) {}
 
   async crawlLinksFromPage(pageUrl: string, page: puppeteer.Page) {
-    await page.goto(pageUrl, { waitUntil: 'networkidle0' });
-
     const links = await page.evaluate(
       (url) =>
         [...document.querySelectorAll('a')].map((link) => ({

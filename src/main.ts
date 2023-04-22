@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
-import * as basicAuth from 'express-basic-auth';
 import { tracing } from './core/tracing/tracing';
 import { AppLoggerImpl } from './core/logger/logger-impl';
 
