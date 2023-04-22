@@ -5,18 +5,12 @@ import { LoggerModule } from './logger/logger.module';
 import { AppConfigModule } from '../config/app-config.module';
 import { CacheInterceptor } from './interceptors/cache.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
-import { ApiCommunicationManagerModule } from './api-communication-manager/api-communication-manager.module';
 import { AllExceptionsFilter } from './exceptions/all-exception.filter';
 import { HttpExceptionsFilter } from './exceptions/http-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 @Module({
-  imports: [
-    LoggerModule,
-    AppConfigModule,
-    ApiCommunicationManagerModule,
-    HttpModule.register({}),
-  ],
+  imports: [LoggerModule, AppConfigModule, HttpModule.register({})],
   providers: [
     {
       provide: APP_FILTER,
