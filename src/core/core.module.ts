@@ -6,8 +6,8 @@ import { AppConfigModule } from '../config/app-config.module';
 import { CacheInterceptor } from './interceptors/cache.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { AllExceptionsFilter } from './exceptions/all-exception.filter';
-import { HttpExceptionsFilter } from './exceptions/http-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { HttpExceptionsFilter } from './exceptions/http-exception.filter';
 
 @Module({
   imports: [LoggerModule, AppConfigModule, HttpModule.register({})],
@@ -33,6 +33,6 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
       useClass: TimeoutInterceptor,
     },
   ],
-  exports: [ApiCommunicationManagerModule, AppConfigModule, LoggerModule],
+  exports: [AppConfigModule, LoggerModule],
 })
 export class CoreModule {}
