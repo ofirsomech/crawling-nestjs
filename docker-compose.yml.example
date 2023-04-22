@@ -1,0 +1,33 @@
+version: "3"
+services:
+  app:
+    build: .
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      newnetwork:
+    environment:
+      - DB_HOST=db
+      - DB_NAME=crawling
+      - DB_USER=root
+      - DB_PASSWORD=770770
+  db:
+    image: mysql:latest
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      newnetwork:
+        ipv4_address: 180.19.0.10
+    environment:
+      - MYSQL_ROOT_PASSWORD=770770
+      - MYSQL_DATABASE=crawling
+networks:
+  newnetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: "180.19.0.0/16"
+    external: false
+

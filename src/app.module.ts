@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppConfigModule } from './config/app-config.module';
-import { DatabaseModule } from './database/database.module';
-import { TypeOrmSqlConfigService } from './database/type-orm-sql-config.service';
-import { ExampleModule } from './modules/example/example.module';
-import { HealthModule } from './modules/app/health/health.module';
 import { CoreModule } from './core/core.module';
+import { DatabaseModule } from './database/database.module';
+import { AppConfigModule } from './config/app-config.module';
+import { HealthModule } from './modules/app/health/health.module';
 import { ScrapperModule } from './modules/scrapper/scrapper.module';
+import { TypeOrmSqlConfigService } from './database/type-orm-sql-config.service';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { ScrapperModule } from './modules/scrapper/scrapper.module';
     }),
     HealthModule,
     AppConfigModule,
-    ExampleModule,
     ScrapperModule,
   ],
   exports: [],
