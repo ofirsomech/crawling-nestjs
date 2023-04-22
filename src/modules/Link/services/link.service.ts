@@ -11,8 +11,8 @@ export class LinkService {
     private readonly linkRepository: LinkRepository
   ) {}
 
-  async crawlLinksFromPage(url: string, page: puppeteer.Page) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
+  async crawlLinksFromPage(pageUrl: string, page: puppeteer.Page) {
+    await page.goto(pageUrl, { waitUntil: 'networkidle0' });
 
     const links = await page.evaluate(
       (url) =>
@@ -21,13 +21,13 @@ export class LinkService {
           url_link: link.href,
           text: link.textContent.trim(),
         })),
-      url
+      pageUrl
     );
 
     const savePromises = links.map(async (link) => {
       const linkEntity = new Link();
       linkEntity.url = link.url;
-      linkEntity.url_link = link.url_link;
+      linkEntity.urlLink = link.url_link;
       linkEntity.text = link.text;
 
       try {

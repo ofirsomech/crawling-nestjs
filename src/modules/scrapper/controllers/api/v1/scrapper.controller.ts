@@ -1,7 +1,8 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppLogger } from '../../../../../core/logger/logger';
 import { ScrapperProvider } from '../../../providers/scrapper.provider';
+import { ScrapperRequestDto } from '../../../models/crawl.request';
 
 @ApiTags('Scrapper')
 @Controller({ path: 'scrapper', version: '1' })
@@ -13,9 +14,9 @@ export class ScrapperController {
     appLogger.setContext(`${this.constructor.name}`);
   }
 
-  @Get('crawl/:url')
-  async crawlWebsite(@Param('url') url: string) {
-    return this.scrapperProvider.crawlWebsite(url);
+  @Post('crawl')
+  async crawlWebsite(@Body() dto: ScrapperRequestDto) {
+    return this.scrapperProvider.crawlWebsite(dto.url);
   }
 
   @Get('get-data/:url')

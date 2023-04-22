@@ -1,12 +1,12 @@
+import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import helmet from 'helmet';
-import { ConfigService } from '@nestjs/config';
-import { AppLoggerImpl } from './core/logger/logger-impl';
 import { AppModule } from './app.module';
-import { tracing } from './core/tracing/tracing';
 import * as basicAuth from 'express-basic-auth';
+import { tracing } from './core/tracing/tracing';
+import { AppLoggerImpl } from './core/logger/logger-impl';
 
 declare const module;
 
@@ -47,10 +47,9 @@ async function bootstrap() {
     );
 
     const config = new DocumentBuilder()
-      .setTitle('NestJS StarterKit')
-      .setDescription('StarterKit API description')
+      .setTitle('Crawling API')
+      .setDescription('Crawling API')
       .setVersion('1.0')
-      .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
@@ -68,6 +67,7 @@ async function bootstrap() {
   const port = configService.get('application.port') || 8080;
 
   await app.listen(port);
+  console.log('Server running on port: ', port);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());

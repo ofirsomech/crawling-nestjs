@@ -18,7 +18,8 @@ export class ScrapperService {
 
   async crawlWebsite(url: string) {
     const browser: puppeteer.Browser = await puppeteer.launch({
-      headless: true,
+      executablePath: '/usr/bin/chromium-browser',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page: puppeteer.Page = await browser.newPage();
 

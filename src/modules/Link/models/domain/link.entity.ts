@@ -17,7 +17,7 @@ export class Link {
   url: string;
 
   @Column()
-  url_link: string;
+  urlLink: string;
 
   @Column({
     length: 2048,
@@ -25,9 +25,6 @@ export class Link {
     collation: 'utf8mb4_unicode_ci',
   })
   text: string;
-
-  @Column({ nullable: true })
-  screenshotPath?: string;
 
   @CreateDateColumn()
   createdAt: Date;

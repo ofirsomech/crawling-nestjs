@@ -3,6 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ScrapperRequestDto {
   @IsOptional()
-  @ApiProperty()
-  example: string;
+  @ApiProperty({ example: 'https://www.akamai.com' })
+  url: string;
 }
