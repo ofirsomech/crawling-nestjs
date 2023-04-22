@@ -1,3 +1,12 @@
+## NestJS Web Scraper Application
+### Configure app for development
+Duplicate production.env.example and remove the '.exmaple' from the file name.
+Make sure there is a mysql server running and all the configuration is correct (database host, username, etc).
+
+### Configure and start docker
+```bash
+$ docker compose up --build
+```
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -10,18 +19,8 @@ Node version 18.9.0
 
 ```bash
 $ npm i
-$ set the NODE_ENV to development or production
-    To set an environment variable in Windows:
-    SET NODE_ENV=development
-    on OS X or Linux:
-    export NODE_ENV=development
 ```
 
-### Configure app for development
-
-Duplicate development.env.example and remove the '.exmaple' from the file name.
-Make sure there is a mysql server running and all the configuration is correct (database host, username, etc).
-Duplicate secrets/secrets.json.example and remove the '.exmaple' from the file name.
 
 # REST API Documentation
 
