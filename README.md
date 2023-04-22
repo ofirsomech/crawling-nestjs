@@ -1,12 +1,16 @@
 ## NestJS Web Scraper Application
+
 ### Configure app for development
+
 Duplicate production.env.example and remove the '.exmaple' from the file name.
 Make sure there is a mysql server running and all the configuration is correct (database host, username, etc).
 
 ### Configure and start docker
+
 ```bash
 $ docker compose up --build
 ```
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -20,7 +24,6 @@ Node version 18.9.0
 ```bash
 $ npm i
 ```
-
 
 # REST API Documentation
 
@@ -66,6 +69,17 @@ url - The URL of the website to extract data from.
 - links: An array of objects containing information about each link.
 - stylesheets: An array of objects containing information about each stylesheet.
 - scripts: An array of objects containing information about each script.
+
+## Configuration
+
+The application uses an AppConfigService to manage configuration. By default, the application uses the values in the
+.env file to set configuration variables. If you need to override any of these variables, you can create a .env.local
+file and set the values there.
+
+## Logging
+
+The application uses an AppLogger to log information. By default, logs are written to the console. If you need to write
+logs to a file or another destination, you can modify the AppLogger class to suit your needs.
 
 ## API Version and Tags
 
