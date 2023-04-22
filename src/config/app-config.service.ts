@@ -18,4 +18,8 @@ export class AppConfigService {
   get isDocker(): boolean {
     return this.configService.get('application.dockerEnv') === 'TRUE';
   }
+
+  get baseUrl(): string {
+    return this.configService.get('application.baseUrl');
+  }
 }
