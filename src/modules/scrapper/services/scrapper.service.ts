@@ -5,6 +5,7 @@ import { LinkService } from '../../Link/services/link.service';
 import { ScriptService } from '../../script/services/script.service';
 import { ScreenshotService } from '../../screenshot/services/screenshot.service';
 import { StylesheetService } from '../../stylesheet/services/stylesheet.service';
+import { addToAllScansData } from '../utils/utils';
 
 @Injectable()
 export class ScrapperService {
@@ -47,102 +48,25 @@ export class ScrapperService {
   }
 
   async getAllScansData() {
-    this.appLogger.log(`Getting all scan data`);
-
     const allScansData = {};
 
-    // Fetch all scan data
     const allScreenshots = await this.screenshotService.find();
     const allLinks = await this.linkService.find();
     const allStylesheets = await this.stylesheetService.find();
     const allScripts = await this.scriptService.find();
 
-    // Group scan data by website, date, and type
     for (const item of allScreenshots) {
-      const website = item.url;
-      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
-        timeZone: 'UTC',
-      });
-
-      if (!allScansData[website]) {
-        allScansData[website] = {};
-      }
-
-      if (!allScansData[website][date]) {
-        allScansData[website][date] = {};
-      }
-
-      if (!allScansData[website][date].screenshots) {
-        allScansData[website][date].screenshots = [];
-      }
-
-      allScansData[website][date].screenshots.push(item);
+      addToAllScansData(allScansData, item, 'screenshots');
     }
-
     for (const item of allLinks) {
-      const website = item.url;
-      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
-        timeZone: 'UTC',
-      });
-
-      if (!allScansData[website]) {
-        allScansData[website] = {};
-      }
-
-      if (!allScansData[website][date]) {
-        allScansData[website][date] = {};
-      }
-
-      if (!allScansData[website][date].links) {
-        allScansData[website][date].links = [];
-      }
-
-      allScansData[website][date].links.push(item);
+      addToAllScansData(allScansData, item, 'links');
     }
-
     for (const item of allStylesheets) {
-      const website = item.url;
-      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
-        timeZone: 'UTC',
-      });
-
-      if (!allScansData[website]) {
-        allScansData[website] = {};
-      }
-
-      if (!allScansData[website][date]) {
-        allScansData[website][date] = {};
-      }
-
-      if (!allScansData[website][date].stylesheets) {
-        allScansData[website][date].stylesheets = [];
-      }
-
-      allScansData[website][date].stylesheets.push(item);
+      addToAllScansData(allScansData, item, 'stylesheets');
     }
-
     for (const item of allScripts) {
-      const website = item.url;
-      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
-        timeZone: 'UTC',
-      });
-
-      if (!allScansData[website]) {
-        allScansData[website] = {};
-      }
-
-      if (!allScansData[website][date]) {
-        allScansData[website][date] = {};
-      }
-
-      if (!allScansData[website][date].scripts) {
-        allScansData[website][date].scripts = [];
-      }
-
-      allScansData[website][date].scripts.push(item);
+      addToAllScansData(allScansData, item, 'scripts');
     }
-
-    this.appLogger.log('Got all scan data');
 
     return allScansData;
   }
