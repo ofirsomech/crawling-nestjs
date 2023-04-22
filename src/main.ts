@@ -36,15 +36,7 @@ async function bootstrap() {
   const SWAGGER_URI = 'swagger-docs';
 
   if (SWAGGER_ENVS.includes(process.env.NODE_ENV)) {
-    app.use(
-      [`/${SWAGGER_URI}`, `/${SWAGGER_URI}-json`],
-      basicAuth({
-        challenge: true,
-        users: {
-          [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
-        },
-      })
-    );
+    app.use([`/${SWAGGER_URI}`, `/${SWAGGER_URI}-json`]);
 
     const config = new DocumentBuilder()
       .setTitle('Crawling API')
@@ -67,7 +59,7 @@ async function bootstrap() {
   const port = configService.get('application.port') || 8080;
 
   await app.listen(port);
-  console.log('Server running on port: ', port);
+  console.log('Server running on port:', port);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
