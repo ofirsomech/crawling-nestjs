@@ -6,4 +6,5 @@ export default registerAs('application', () => ({
   salt: Number.parseInt(process.env.SALT, 10),
   nodeEnv: process.env.NODE_ENV,
   logLevel: process.env.LOG_LEVEL,
+  dockerEnv: process.env.DOCKER_ENV,
 }));

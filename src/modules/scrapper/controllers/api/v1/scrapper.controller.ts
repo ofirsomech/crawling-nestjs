@@ -1,8 +1,11 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { AppLogger } from '../../../../../core/logger/logger';
 import { ScrapperProvider } from '../../../providers/scrapper.provider';
 import { ScrapperRequestDto } from '../../../models/crawl.request';
+import { Response } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @ApiTags('Scrapper')
 @Controller({ path: 'scrapper', version: '1' })
@@ -19,8 +22,8 @@ export class ScrapperController {
     return this.scrapperProvider.crawlWebsite(dto.url);
   }
 
-  @Get('getAllScansData')
-  async getAllScansData() {
+  @Get('get-scans')
+  async getWebsiteData() {
     return this.scrapperProvider.getAllScansData();
   }
 }

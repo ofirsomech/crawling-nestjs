@@ -14,4 +14,8 @@ export class AppConfigService {
   get isProduction(): boolean {
     return this.configService.get('application.nodeEnv') === 'production';
   }
+
+  get isDocker(): boolean {
+    return this.configService.get('application.dockerEnv') === 'TRUE';
+  }
 }
