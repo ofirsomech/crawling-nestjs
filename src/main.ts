@@ -32,21 +32,16 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  const SWAGGER_ENVS = ['local', 'development', 'staging'];
   const SWAGGER_URI = 'swagger-docs';
 
-  if (SWAGGER_ENVS.includes(process.env.NODE_ENV)) {
-    app.use([`/${SWAGGER_URI}`, `/${SWAGGER_URI}-json`]);
+  const config = new DocumentBuilder()
+    .setTitle('Crawling API')
+    .setDescription('Crawling API')
+    .setVersion('1.0')
+    .build();
 
-    const config = new DocumentBuilder()
-      .setTitle('Crawling API')
-      .setDescription('Crawling API')
-      .setVersion('1.0')
-      .build();
-
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup(SWAGGER_URI, app, document);
-  }
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(SWAGGER_URI, app, document);
 
   app.use(helmet());
 
