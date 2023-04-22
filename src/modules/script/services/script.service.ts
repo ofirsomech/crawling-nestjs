@@ -34,9 +34,7 @@ export class ScriptService {
     return scripts;
   }
 
-  async find(url) {
-    return this.scriptRepository.find({
-      where: { url: url },
-    });
+  async find() {
+    return this.scriptRepository.find();
   }
 }

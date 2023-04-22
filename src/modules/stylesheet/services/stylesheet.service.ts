@@ -42,9 +42,7 @@ export class StylesheetService {
     return stylesheets;
   }
 
-  async find(url) {
-    return this.stylesheetRepository.find({
-      where: { url: url },
-    });
+  async find() {
+    return this.stylesheetRepository.find();
   }
 }

@@ -45,9 +45,7 @@ export class LinkService {
     return links;
   }
 
-  async find(url) {
-    return this.linkRepository.find({
-      where: { url: url },
-    });
+  async find() {
+    return this.linkRepository.find();
   }
 }

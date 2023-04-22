@@ -19,8 +19,8 @@ export class ScrapperController {
     return this.scrapperProvider.crawlWebsite(dto.url);
   }
 
-  @Get('get-data/:url')
-  async getWebsiteData(@Param('url') url: string) {
-    return this.scrapperProvider.getWebsiteData(url);
+  @Get('getAllScansData')
+  async getAllScansData() {
+    return this.scrapperProvider.getAllScansData();
   }
 }

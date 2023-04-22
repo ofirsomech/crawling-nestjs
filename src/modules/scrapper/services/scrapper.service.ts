@@ -17,10 +17,11 @@ export class ScrapperService {
   ) {}
 
   async crawlWebsite(url: string) {
-    const browser: puppeteer.Browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium-browser',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+    // const browser: puppeteer.Browser = await puppeteer.launch({
+    //   executablePath: '/usr/bin/chromium-browser',
+    //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    // });
+    const browser: puppeteer.Browser = await puppeteer.launch();
     const page: puppeteer.Page = await browser.newPage();
 
     const screenshot: string = await this.screenshotService.crawlScreenshot(
@@ -45,28 +46,104 @@ export class ScrapperService {
     };
   }
 
-  async getWebsiteData(url: string) {
-    this.appLogger.log(`Getting website data: ${url}`);
+  async getAllScansData() {
+    this.appLogger.log(`Getting all scan data`);
 
-    const websiteData = {};
+    const allScansData = {};
 
-    // Fetch website data
-    const screenshot = await this.screenshotService.find(url);
-    const links = await this.linkService.find(url);
-    const stylesheets = await this.stylesheetService.find(url);
-    const scripts = await this.scriptService.find(url);
+    // Fetch all scan data
+    const allScreenshots = await this.screenshotService.find();
+    const allLinks = await this.linkService.find();
+    const allStylesheets = await this.stylesheetService.find();
+    const allScripts = await this.scriptService.find();
 
-    // Group website data by date
-    for (const item of [...screenshot, ...links, ...stylesheets, ...scripts]) {
-      const date = new Date(item.createdAt).toLocaleDateString('en-GB');
-      if (!websiteData[date]) {
-        websiteData[date] = [];
+    // Group scan data by website, date, and type
+    for (const item of allScreenshots) {
+      const website = item.url;
+      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
+      });
+
+      if (!allScansData[website]) {
+        allScansData[website] = {};
       }
-      websiteData[date].push(item);
+
+      if (!allScansData[website][date]) {
+        allScansData[website][date] = {};
+      }
+
+      if (!allScansData[website][date].screenshots) {
+        allScansData[website][date].screenshots = [];
+      }
+
+      allScansData[website][date].screenshots.push(item);
     }
 
-    this.appLogger.log(`Got website data: ${url}`);
+    for (const item of allLinks) {
+      const website = item.url;
+      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
+      });
 
-    return websiteData;
+      if (!allScansData[website]) {
+        allScansData[website] = {};
+      }
+
+      if (!allScansData[website][date]) {
+        allScansData[website][date] = {};
+      }
+
+      if (!allScansData[website][date].links) {
+        allScansData[website][date].links = [];
+      }
+
+      allScansData[website][date].links.push(item);
+    }
+
+    for (const item of allStylesheets) {
+      const website = item.url;
+      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
+      });
+
+      if (!allScansData[website]) {
+        allScansData[website] = {};
+      }
+
+      if (!allScansData[website][date]) {
+        allScansData[website][date] = {};
+      }
+
+      if (!allScansData[website][date].stylesheets) {
+        allScansData[website][date].stylesheets = [];
+      }
+
+      allScansData[website][date].stylesheets.push(item);
+    }
+
+    for (const item of allScripts) {
+      const website = item.url;
+      const date = new Date(item.createdAt).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
+      });
+
+      if (!allScansData[website]) {
+        allScansData[website] = {};
+      }
+
+      if (!allScansData[website][date]) {
+        allScansData[website][date] = {};
+      }
+
+      if (!allScansData[website][date].scripts) {
+        allScansData[website][date].scripts = [];
+      }
+
+      allScansData[website][date].scripts.push(item);
+    }
+
+    this.appLogger.log('Got all scan data');
+
+    return allScansData;
   }
 }
