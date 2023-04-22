@@ -4,12 +4,14 @@ import * as puppeteer from 'puppeteer';
 import { Injectable } from '@nestjs/common';
 import { AppLogger } from '../../../core/logger/logger';
 import { Screenshot } from '../models/domain/screenshot.entity';
+import { AppConfigService } from '../../../config/app-config.service';
 import { ScreenshotRepository } from '../repositories/screenshot.repository';
 
 @Injectable()
 export class ScreenshotService {
   constructor(
     private readonly appLogger: AppLogger,
+    private readonly appConfigService: AppConfigService,
     private readonly screenshotRepository: ScreenshotRepository
   ) {}
 
@@ -18,8 +20,7 @@ export class ScreenshotService {
     page: puppeteer.Page,
     dockerEnvironment: boolean
   ): Promise<string> {
-    const baseUrl = 'http://localhost:8081';
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    const baseUrl = this.appConfigService.baseUrl;
     const screenshot = await page.screenshot({
       fullPage: true,
       type: 'jpeg',
