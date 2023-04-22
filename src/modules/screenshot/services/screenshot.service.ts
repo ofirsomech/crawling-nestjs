@@ -43,9 +43,7 @@ export class ScreenshotService {
     return screenshotPath;
   }
 
-  async find(url) {
-    return this.screenshotRepository.find({
-      where: { url: url },
-    });
+  async find() {
+    return this.screenshotRepository.find();
   }
 }
