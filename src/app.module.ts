@@ -6,6 +6,7 @@ import { AppConfigModule } from './config/app-config.module';
 import { HealthModule } from './modules/app/health/health.module';
 import { ScrapperModule } from './modules/scrapper/scrapper.module';
 import { TypeOrmSqlConfigService } from './database/type-orm-sql-config.service';
+import {ScreenshotModule} from "./modules/screenshot/screenshot.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TypeOrmSqlConfigService } from './database/type-orm-sql-config.service'
     HealthModule,
     AppConfigModule,
     ScrapperModule,
+    ScreenshotModule,
   ],
   exports: [],
 })

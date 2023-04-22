@@ -17,7 +17,10 @@ export class Screenshot {
   url: string;
 
   @Column()
-  path: string;
+  fileName: string;
+
+  @Column()
+  downloadLink: string;
 
   @CreateDateColumn()
   createdAt: Date;

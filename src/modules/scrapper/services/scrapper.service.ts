@@ -39,7 +39,8 @@ export class ScrapperService {
 
     const screenshot: string = await this.screenshotService.crawlScreenshot(
       url,
-      page
+      page,
+      dockerEnvironment
     );
     const links = await this.linkService.crawlLinksFromPage(url, page);
     const stylesheets = await this.stylesheetService.crawlStylesheetsFromPage(
@@ -57,7 +58,7 @@ export class ScrapperService {
     this.appLogger.log(`Crawled website: ${url} in ${durationInSeconds}s`);
 
     return {
-      screenshot: `Screenshot saved at ${screenshot}`,
+      screenshot: screenshot,
       links: links.length,
       stylesheets: stylesheets.length,
       scripts: scripts.length,
