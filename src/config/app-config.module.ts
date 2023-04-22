@@ -9,7 +9,7 @@ import { LoggerModule } from '../core/logger/logger.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['production.env', '.staging.env', 'development.env'],
+      envFilePath: ['production.env', '.staging.env'],
       load: [databaseConfig, appConfig],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
