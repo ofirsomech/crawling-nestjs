@@ -2,7 +2,7 @@ import * as puppeteer from 'puppeteer';
 import { Injectable } from '@nestjs/common';
 import { addToAllScansData } from '../utils/utils';
 import { AppLogger } from '../../../core/logger/logger';
-import { LinkService } from '../../Link/services/link.service';
+import { LinkService } from '../../link/services/link.service';
 import { ScriptService } from '../../script/services/script.service';
 import { AppConfigService } from '../../../config/app-config.service';
 import { ScreenshotService } from '../../screenshot/services/screenshot.service';
